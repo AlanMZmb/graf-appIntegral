@@ -40,7 +40,9 @@ const keys = {};
 const moveSpeed = 0.05;
 
 const rotateSpeed = 0.03;
-const cameraOffset = new THREE.Vector3(0, 150, -250);
+const cameraDistance = 8;
+
+const cameraHeight = 4;
 
 init();
 animate();
@@ -308,13 +310,25 @@ function animate() {
 
         }
 
-        const offset = cameraOffset.clone();
+        const targetX =
+            player.position.x - Math.sin(player.rotation.y) * cameraDistance;
 
-        offset.applyMatrix4(player.matrixWorld);
+        const targetZ =
+            player.position.z - Math.cos(player.rotation.y) * cameraDistance;
 
-        camera.position.lerp(offset, 0.1);
+        const targetY =
+            player.position.y + cameraHeight;
 
-        const lookTarget = player.position.clone();
+        camera.position.lerp(
+            new THREE.Vector3(targetX, targetY, targetZ),
+            0.1
+        );
+
+        camera.lookAt(
+            player.position.x,
+            player.position.y + 2,
+            player.position.z
+        );
 
         if (!isJumping){
             if (running) {
